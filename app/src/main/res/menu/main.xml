@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/delete_all"
+        android:orderInCategory="100"
+        android:title="Delete all the subjects"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/clear_all_attendance"
+        android:orderInCategory="100"
+        android:title="Clear attendance of all the subjects"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/change_limit"
+        android:orderInCategory="100"
+        android:title="Edit minimum attendance percent"
+        app:showAsAction="never" />
+
+</menu>

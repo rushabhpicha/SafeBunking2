@@ -26,24 +26,29 @@ public class Add_Subject extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_subject);
 
+        // Initialize a toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);  // Display Back button on the Toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);  //
 //        getSupportActionBar().setIcon(R.drawable.bunking_logo);
-        Typeface sans = Typeface.createFromAsset(getAssets(), "font/Lato-Bold.ttf");
-        mTitle.setTypeface(sans);
+        Typeface sans = Typeface.createFromAsset(getAssets(), "font/Lato-Bold.ttf"); // Initializing font variable
+        mTitle.setTypeface(sans);   // set the font
 
+        // Initialize the View variable
         etsubject_name = (EditText) findViewById(R.id.etsubject_name);
         ettotal_lectures = (EditText) findViewById(R.id.ettotal_lectures);
         etbunked_lectures = (EditText) findViewById(R.id.etbunked_lectures);
         submit = (Button) findViewById(R.id.submit);
 
-            subject_name = etsubject_name.getText().toString().trim();
-            total_lectures = ettotal_lectures.getText().toString().trim();
-            bunked_lectures = etbunked_lectures.getText().toString().trim();
+        // get the input from those views and store it in a variable
+        subject_name = etsubject_name.getText().toString().trim();
+        total_lectures = ettotal_lectures.getText().toString().trim();
+        bunked_lectures = etbunked_lectures.getText().toString().trim();
+
+
         try {
             b = Integer.parseInt(bunked_lectures);
             t = Integer.parseInt(total_lectures);

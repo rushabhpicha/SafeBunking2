@@ -35,14 +35,18 @@ public class Individual extends AppCompatActivity {
         } catch (ClassCastException e) {
             e.printStackTrace();
         }
-        databaseHelper=new DatabaseHelper(this);
-        final SQLiteDatabase db=databaseHelper.getReadableDatabase();
+        // creating an instance of DatabaseHelper class
+        databaseHelper = new DatabaseHelper(this);
+        final SQLiteDatabase db = databaseHelper.getReadableDatabase();
         Cursor c=db.rawQuery("select notes from bunk where subject_name='"+subject_name+"'",null);
+
+        // If the cursor is not null move it to the first row. Use the getString(int) to retrieve the notes value.
+
         if(c!=null) {
             c.moveToFirst();
-                    notes = c.getString(0);
-            }
-            c.close();
+            notes = c.getString(0);
+        }
+            c.close();  //closing the cursor. Very very important.
 
 
         e_notes.setText(notes);
@@ -54,27 +58,31 @@ public class Individual extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
+
+    // Update notes whenever the user presses the back button
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
-            String noot=e_notes.getText().toString();
-            noot=noot.replaceAll("'","''");
-//            noot=noot.replaceAll("/","//");
-//            noot=noot.replaceAll("\","\\");
-            databaseHelper = new DatabaseHelper(this);
-            SQLiteDatabase db=databaseHelper.getWritableDatabase();
-            db.execSQL("update bunk set notes='"+noot+" ' where subject_name='" +subject_name+"'");
-            finish();
+            updateNotes();
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void onBackPressed() {
-        String noot=e_notes.getText().toString();
+
+    // Updates the notes table in the database whenever a user presses the back button.
+    private void updateNotes() {
+        String noot = e_notes.getText().toString();
+        noot = noot.replaceAll("'","''");
         databaseHelper = new DatabaseHelper(this);
         SQLiteDatabase db=databaseHelper.getWritableDatabase();
+        // Whatever is is written in the notes textview update the notes column
         db.execSQL("update bunk set notes='"+noot+" ' where subject_name='" +subject_name+"'");
-        finish();
+        finish();  // Close the activity after the database is updated.
+    }
+
+    // Call updateNotes on backPressed
+    @Override
+    public void onBackPressed() {
+        updateNotes();
         super.onBackPressed();
     }
 }

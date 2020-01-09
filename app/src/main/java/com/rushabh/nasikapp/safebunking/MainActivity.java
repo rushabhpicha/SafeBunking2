@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Instantiating the recyclerView
         recycler=new RecycleAdapter(dataModelArrayList,this);
         rl=findViewById(R.id.clo);
         recyclerView=findViewById(R.id.recycle);
@@ -97,22 +98,23 @@ public class MainActivity extends AppCompatActivity
         database = new DatabaseHelper(MainActivity.this);
         attendance = database.getWritableDatabase();
         datamodel = database.getdata();
-        recycler = new RecycleAdapter((ArrayList<DataModel>) datamodel, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(recycler);
 
-        RecyclerView.LayoutManager reLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(reLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(recycler);
+        /* A LayoutManager is responsible for measuring and positioning item views within a
+        RecyclerView as well as determining the policy for when to recycle item views that are no longer visible to
+        the user. The other options are GridLayoutManager, StaggeredGridLayoutManager or event
+        WearableLinearLayoutManager.*/
+        recycler = new RecycleAdapter((ArrayList<DataModel>) datamodel, this); // Instance of RecycleAdapter
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext()); // Instance of LayoutManager
+        recyclerView.setLayoutManager(mLayoutManager); // setting the LayoutManager to the RecyclerView
+        recyclerView.setItemAnimator(new DefaultItemAnimator()); // Setting the Default Animation for RV.
+        recyclerView.setAdapter(recycler); //Assigning the adapter to the RV
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(MainActivity.this,Add_Subject.class);
+                // Open Activity Add_Subject when user clicks on the plus button.
+                Intent i=new Intent(MainActivity.this, Add_Subject.class);
                 startActivity(i);
             }
         });
@@ -121,11 +123,13 @@ public class MainActivity extends AppCompatActivity
         overall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Open Activity Overalll when user clicks on the plus button.
                 Intent i=new Intent(MainActivity.this,overall.class);
                 i.putExtra("tasks", dataModelArrayList);
                 startActivity(i);
             }
         });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -139,20 +143,22 @@ public class MainActivity extends AppCompatActivity
         rupani(MainActivity.this);
     }
     public static void rupani(Context context){
-        if(recycler.getItemCount()==0){
+        if(recycler.getItemCount() == 0){
            rl.setBackgroundResource(R.drawable.arrow);
         }
         else
         {
             rl.setBackgroundColor(Color.parseColor("#c0c0c0"));
         }
-        if(recycler.getItemCount()==1){
+        if(recycler.getItemCount() > 0){
             Toast.makeText(context, "Click the plus button when you attend a lecture and the minus button when you bunk a lecture for that subject!", Toast.LENGTH_LONG).show();
         }
     }
+
+    // Code to be executed when the app is installed for the first time.
     private void license() {
         prefs = getDefaultSharedPreferences(this);
-        isFirstRun = prefs.getBoolean("isFirstRun", true);
+        isFirstRun = prefs.getBoolean("isFirstRun", true); // get default value of sharedpreferences which is true.
         if(isFirstRun){
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setTitle("Help");
@@ -209,9 +215,9 @@ public class MainActivity extends AppCompatActivity
             AlertDialog alert = alertDialog.create();
             alert.show();
         }
-        isFirstRun = false;
+        isFirstRun = false; // After the firstRun change the variable to false so that the code is executed only once.
 
-        prefs.edit().putBoolean("isFirstRun", isFirstRun).commit();
+        prefs.edit().putBoolean("isFirstRun", isFirstRun).commit(); //commit the value of sharedpreference.
 
     }
     public boolean onContextItemSelected(MenuItem item)
@@ -239,11 +245,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-//        DataModel data=(DataModel) dataModel.get((int)((AdapterContextMenuInfo)item.getMenuInfo()).id);
-//        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
         switch (id) {
             case R.id.clear_all_attendance: {
-
+                // If pressed yes, update the SQL query and set the lectures to 0.
                 new AlertDialog.Builder(this)
                         .setMessage("Do you want to clear all the subjects?")
                         .setCancelable(false)
@@ -258,6 +263,7 @@ public class MainActivity extends AppCompatActivity
 
                 break;
             }
+            // If pressed yes, delete all the subjects from the database.
             case R.id.delete_all: {
                 new AlertDialog.Builder(this)
                         .setMessage("Do you want to delete all the subjects?")
@@ -273,6 +279,7 @@ public class MainActivity extends AppCompatActivity
                         .show();
                 break;
             }
+            // If the user wants to change the limit, change the limit and update the value in the sharedpreference.
             case R.id.change_limit: {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                 String message = "Enter the minimum attendance percent required in your college";
@@ -313,10 +320,12 @@ public class MainActivity extends AppCompatActivity
         }
 
     @SuppressWarnings("StatementWithEmptyBody")
+    // Implementation of the NavigationItems.
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        // Use of explicit intent to open the list of messaging application.
         if (id == R.id.nav_share) {
             try {
                 Intent i = new Intent(Intent.ACTION_SEND);
@@ -331,10 +340,8 @@ public class MainActivity extends AppCompatActivity
                 //e.toString();
             }
         }
-//        else if(id==R.id.timetable) {
-////            Intent i = new Intent(MainActivity.this, Time_table.class);
-////            startActivity(i);
-//        }
+
+        // Use of Explicit intent to open the play store with this app to store ratings.
         else if (id == R.id.rate) {
             Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
             Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
@@ -350,12 +357,16 @@ public class MainActivity extends AppCompatActivity
                         Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
             }
         }
+
+        // Use of Explicit Intent to open the MailBox.
         else if(id==R.id.feedback){
             Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:" + "rushabhpicha12@gmail.com"));
             intent1.putExtra(Intent.EXTRA_SUBJECT, "Subject of feedback:-");
             intent1.putExtra(Intent.EXTRA_TEXT, "Content of feedback:-");
             startActivity(intent1);
         }
+
+        // Open the AlertDialodBox when clicked on help
         else if(id==R.id.help){
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setTitle("Help");
@@ -384,6 +395,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    // Returns datamodel size.
     public static int getPosition(){
         int value = 0;
         for(int i=0;i<datamodel.size();i++) {
@@ -391,6 +403,9 @@ public class MainActivity extends AppCompatActivity
         }
         return value;
     }
+
+    // A very important method which is updated every time a change is made in the Adapter class. This method is called
+    // everytime an operation is created on the adapter class to update the view. This is a nice example of MVC Design Pattern.
     public static void updateList()
     {
         datamodel.clear();

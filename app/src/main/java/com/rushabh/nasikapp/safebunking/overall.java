@@ -88,20 +88,4 @@ public class overall extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();  //Takes you to the previous activity by default
     }
-    public int safebunks(int mpercent, int total, int bunked) {
-        int asum = total;
-        int bsum = bunked;
-        int count = 0;
-        float percentage = (((float) (asum - bsum)) / ((float) asum)) * 100.0f;
-        while (percentage >= ((float) mpercent)) {
-            asum++;
-            count++;
-            bsum++;
-            percentage = (((float) (asum - bsum)) * 100.0f) / ((float) asum);
-            if (percentage < ((float) mpercent)) {
-                return count - 1;
-            }
-        }
-        return asum - total;
-    }
 }
